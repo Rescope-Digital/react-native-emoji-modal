@@ -7,7 +7,6 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "jsx": "react-native",
-    "suppressImplicitAnyIndexErrors": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "noUnusedLocals": true,

@@ -1,15 +1,15 @@
-import {PureComponent, createElement as $, RefObject, createRef} from 'react';
+import { createElement as $, PureComponent, RefObject, createRef } from 'react';
 import {
+  FlatList,
+  Platform,
   StyleSheet,
   Text,
-  View,
-  Platform,
-  ViewStyle,
-  TextStyle,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  FlatList,
   TextInput,
+  TextStyle,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+  ViewStyle,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const groupBy = require('just-group-by/index.js');
@@ -19,6 +19,7 @@ const noop = () => {};
 interface Emoji {
   category: string;
   unified: string;
+  name: string;
   short_name: string;
   added_in: string;
   _score: number;
@@ -30,7 +31,7 @@ interface Emoji {
 // and `String.fromCodePoint` on MDN
 function charFromUtf16(utf16: string) {
   return String.fromCodePoint(
-    ...(utf16.split('-').map((u) => '0x' + u) as any),
+    ...(utf16.split('-').map((u) => '0x' + u) as any)
   );
 }
 
@@ -47,7 +48,7 @@ type LocalizedCategories = [
   string, // Travel & Places
   string, // Objects
   string, // Symbols
-  string, // Flags
+  string // Flags
 ];
 
 const CATEGORIES: LocalizedCategories = [
@@ -211,7 +212,7 @@ class EmojiGroup extends PureComponent<{
 
     return $(
       View,
-      {style: [styles.emojiGroup, {minWidth, maxWidth}]},
+      { style: [styles.emojiGroup, { minWidth, maxWidth }] },
       ...emojis
         .filter((e) => !!e)
         .map((e) =>
@@ -222,9 +223,9 @@ class EmojiGroup extends PureComponent<{
               key: e,
               onPress: () => this.props.onEmojiSelected(e),
             },
-            e,
-          ),
-        ),
+            e
+          )
+        )
     );
   }
 }
@@ -258,15 +259,15 @@ class EmojiCategory extends PureComponent<{
 
     return $(
       View,
-      {style: styles.categoryOuter},
-      $(Text, {style: [styles.headerText, headerStyle]}, categoryText),
+      { style: styles.categoryOuter },
+      $(Text, { style: [styles.headerText, headerStyle] }, categoryText),
       $(EmojiGroup, {
         emojis,
         onEmojiSelected,
         emojiSize,
         emojiStyle,
         columns,
-      }),
+      })
     );
   }
 }
@@ -277,10 +278,10 @@ class SearchField extends PureComponent<{
   onChanged: (str: string) => void;
 }> {
   public render() {
-    const {customStyle, iconColor, onChanged} = this.props;
+    const { customStyle, iconColor, onChanged } = this.props;
     return $(
       View,
-      {style: styles.searchContainer},
+      { style: styles.searchContainer },
       $(Icon, {
         key: 'a',
         size: SEARCH_ICON_SIZE,
@@ -296,7 +297,7 @@ class SearchField extends PureComponent<{
         multiline: false,
         returnKeyType: 'search',
         underlineColorAndroid: 'transparent',
-      }),
+      })
     );
   }
 }
@@ -311,20 +312,25 @@ class CategoryShortcuts extends PureComponent<{
   public render() {
     // Scroll doesn't work on react-native-web due to bad FlatList support
     if (Platform.OS === 'web') {
-      return $(View, {style: styles.shortcutsContainer});
+      return $(View, { style: styles.shortcutsContainer });
     }
 
-    const {onPressCategory, iconColor, activeCategory, activeIconColor, show} =
-      this.props;
+    const {
+      onPressCategory,
+      iconColor,
+      activeCategory,
+      activeIconColor,
+      show,
+    } = this.props;
 
     return $(
       View,
-      {style: styles.shortcutsContainer},
+      { style: styles.shortcutsContainer },
       ...CATEGORIES.map((category) => {
         if (show) {
           return $(
             TouchableOpacity,
-            {onPress: () => onPressCategory?.(category)},
+            { onPress: () => onPressCategory?.(category) },
 
             $(Icon, {
               key: category,
@@ -335,7 +341,7 @@ class CategoryShortcuts extends PureComponent<{
                   ? activeIconColor ?? '#0c0c0c'
                   : iconColor ?? '#bcbcbc',
               name: categoryToIcon(category),
-            }),
+            })
           );
         } else {
           return $(Icon, {
@@ -346,7 +352,7 @@ class CategoryShortcuts extends PureComponent<{
             color: 'transparent',
           });
         }
-      }),
+      })
     );
   }
 }
@@ -385,14 +391,14 @@ export default class EmojiModal extends PureComponent<
 > {
   constructor(props: any) {
     super(props);
-    this.state = {searchResults: [], activeCategory: CATEGORIES[0]};
+    this.state = { searchResults: [], activeCategory: CATEGORIES[0] };
     this.prepareEmojisByCategory();
     this.calculateLayouts(props);
   }
 
   private emojisByCategory: Record<string, Array<string>> = {};
   private filteredEmojis: Array<Emoji> = [];
-  private layouts: Array<{length: number; offset: number; index: number}>;
+  private layouts: Array<{ length: number; offset: number; index: number }>;
   private readonly ref: RefObject<FlatList<unknown>> = createRef();
   private readonly viewabilityConfig = {
     minimumViewTime: 1,
@@ -421,11 +427,11 @@ export default class EmojiModal extends PureComponent<
 
     const groupedEmojis = groupBy(
       this.filteredEmojis,
-      (emoji: Emoji) => emoji.category,
+      (emoji: Emoji) => emoji.category
     );
 
     this.emojisByCategory = mapValues(groupedEmojis, (group: Array<Emoji>) =>
-      group.map(charFromEmojiObj),
+      group.map(charFromEmojiObj)
     );
   }
 
@@ -442,14 +448,14 @@ export default class EmojiModal extends PureComponent<
       const bottomPadding = EMOJI_GROUP_PADDING_BOTTOM;
       const height = headerHeight + numRows * rowHeight + bottomPadding;
       heightsSoFar += height;
-      return {length: height, offset, index: i};
+      return { length: height, offset, index: i };
     });
   }
 
-  private renderItem = ({item}: any) => {
-    const {searchResults} = this.state;
+  private renderItem = ({ item }: any) => {
+    const { searchResults } = this.state;
     if (searchResults.length > 0) {
-      return $(EmojiGroup, {...this.props, emojis: searchResults});
+      return $(EmojiGroup, { ...this.props, emojis: searchResults });
     } else {
       const category = item;
       return $(EmojiCategory, {
@@ -464,7 +470,7 @@ export default class EmojiModal extends PureComponent<
   private onSearchChanged = (input: string) => {
     if (input.length === 0) {
       if (this.state.searchResults.length > 0) {
-        this.setState({searchResults: []});
+        this.setState({ searchResults: [] });
       }
       return;
     }
@@ -475,13 +481,14 @@ export default class EmojiModal extends PureComponent<
     const searchResults = this.filteredEmojis
       .map((emoji) => {
         const shortName = normalize(emoji.short_name);
+        const officialName = normalize(emoji.name);
         const query = normalize(input);
         const score =
-          shortName === query
+          shortName === query || officialName === query
             ? 3
-            : shortName.startsWith(query)
+            : shortName.startsWith(query) || officialName.startsWith(query)
             ? 2
-            : shortName.includes(query)
+            : shortName.includes(query) || officialName.includes(query)
             ? 1
             : 0;
         emoji._score = score;
@@ -493,7 +500,7 @@ export default class EmojiModal extends PureComponent<
 
     if (searchResults.length === 0) searchResults.push('');
 
-    this.setState({searchResults});
+    this.setState({ searchResults });
   };
 
   private onPressCategory = (category: string) => {
@@ -516,14 +523,15 @@ export default class EmojiModal extends PureComponent<
   };
 
   getItemLayout = (data: Array<unknown> | null | undefined, index: number) => {
-    if (data?.[0] === null) return {length: TOTAL_HEIGHT, offset: 0, index: 0};
+    if (data?.[0] === null)
+      return { length: TOTAL_HEIGHT, offset: 0, index: 0 };
     return this.layouts[index];
   };
 
-  onViewableItemsChanged = ({viewableItems}: any) => {
+  onViewableItemsChanged = ({ viewableItems }: any) => {
     if (viewableItems.length === 0) return;
     const category = viewableItems[0].key;
-    this.setState({activeCategory: category});
+    this.setState({ activeCategory: category });
   };
 
   public render() {
@@ -536,14 +544,14 @@ export default class EmojiModal extends PureComponent<
       shortcutColor,
       activeShortcutColor,
     } = this.props;
-    const {searchResults, activeCategory} = this.state;
+    const { searchResults, activeCategory } = this.state;
 
     return $(
       View,
-      {style: [styles.modal, modalStyle]},
+      { style: [styles.modal, modalStyle] },
       $(
         View,
-        {style: [styles.container, containerStyle]},
+        { style: [styles.container, containerStyle] },
         $(SearchField, {
           customStyle: searchStyle,
           onChanged: this.onSearchChanged,
@@ -551,7 +559,7 @@ export default class EmojiModal extends PureComponent<
         }),
         $(
           View,
-          {style: styles.scrollerContainer},
+          { style: styles.scrollerContainer },
           $(FlatList, {
             ['ref' as any]: this.ref,
             data: searchResults.length > 0 ? [null] : CATEGORIES,
@@ -567,7 +575,7 @@ export default class EmojiModal extends PureComponent<
             onViewableItemsChanged: this.onViewableItemsChanged,
             viewabilityConfig: this.viewabilityConfig,
             renderItem: this.renderItem,
-          }),
+          })
         ),
         $(CategoryShortcuts, {
           show: searchResults.length === 0,
@@ -575,14 +583,14 @@ export default class EmojiModal extends PureComponent<
           iconColor: shortcutColor,
           activeIconColor: activeShortcutColor,
           onPressCategory: this.onPressCategory,
-        }),
+        })
       ),
 
       $(
         TouchableWithoutFeedback,
-        {onPress: this.onPressBackground},
-        $(View, {style: [styles.background, backgroundStyle]}),
-      ),
+        { onPress: this.onPressBackground },
+        $(View, { style: [styles.background, backgroundStyle] })
+      )
     );
   }
 }

@@ -18,7 +18,7 @@ This is a rewrite of [react-native-emoji-picker](https://github.com/staltz/react
   - Except for category shortcuts (PRs welcome to fix this!)
 - Written in TypeScript
 - Lightweight
-  - Loads just 163 kB worth of emoji data, versus 1.2 MB in react-native-emoji-picker
+  - Loads just 211 kB worth of emoji data, versus 1.2 MB in react-native-emoji-picker
 
 ## Installation
 

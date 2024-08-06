@@ -10,10 +10,10 @@ const OUTPUT_FILE = path.join(__dirname, '../emoji.json');
   const sortedEmojis = sortBy(allEmojis, 'sort_order');
 
   const liteAndSortedEmojis = sortedEmojis.map((emoji) =>
-    pick(emoji, ['category', 'unified', 'short_name', 'added_in']),
+    pick(emoji, ['category', 'unified', 'name', 'short_name', 'added_in'])
   );
 
   const fileContents = JSON.stringify(liteAndSortedEmojis);
 
-  await fs.promises.writeFile(OUTPUT_FILE, fileContents, {encoding: 'utf-8'});
+  await fs.promises.writeFile(OUTPUT_FILE, fileContents, { encoding: 'utf-8' });
 })();
