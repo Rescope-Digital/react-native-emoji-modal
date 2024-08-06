@@ -23,13 +23,19 @@ This is a rewrite of [react-native-emoji-picker](https://github.com/staltz/react
 ## Installation
 
 ```bash
-pnpm add react-native-emoji-modal
+pnpm add @resco.pe/react-native-emoji-modal
 ```
 
 or
 
 ```bash
-npm install --save react-native-emoji-modal
+npm install --save @resco.pe/react-native-emoji-modal
+```
+
+or
+
+```bash
+yarn add @resco.pe/react-native-emoji-modal
 ```
 
 ## Usage
