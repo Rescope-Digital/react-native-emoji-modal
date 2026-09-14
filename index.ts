@@ -1,3 +1,4 @@
+import Icon from '@react-native-vector-icons/material-design-icons';
 import { createElement as $, PureComponent, RefObject, createRef } from 'react';
 import {
   FlatList,
@@ -11,7 +12,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const groupBy = require('just-group-by/index.js');
 const mapValues = require('just-map-values/index.js');
 const noop = () => {};
@@ -31,7 +31,7 @@ interface Emoji {
 // and `String.fromCodePoint` on MDN
 function charFromUtf16(utf16: string) {
   return String.fromCodePoint(
-    ...(utf16.split('-').map((u) => '0x' + u) as any)
+    ...(utf16.split('-').map((u) => '0x' + u) as any),
   );
 }
 
@@ -48,7 +48,7 @@ type LocalizedCategories = [
   string, // Travel & Places
   string, // Objects
   string, // Symbols
-  string // Flags
+  string, // Flags
 ];
 
 const CATEGORIES: LocalizedCategories = [
@@ -223,9 +223,9 @@ class EmojiGroup extends PureComponent<{
               key: e,
               onPress: () => this.props.onEmojiSelected(e),
             },
-            e
-          )
-        )
+            e,
+          ),
+        ),
     );
   }
 }
@@ -267,7 +267,7 @@ class EmojiCategory extends PureComponent<{
         emojiSize,
         emojiStyle,
         columns,
-      })
+      }),
     );
   }
 }
@@ -297,7 +297,7 @@ class SearchField extends PureComponent<{
         multiline: false,
         returnKeyType: 'search',
         underlineColorAndroid: 'transparent',
-      })
+      }),
     );
   }
 }
@@ -338,10 +338,10 @@ class CategoryShortcuts extends PureComponent<{
               style: styles.shortcut,
               color:
                 category === activeCategory
-                  ? activeIconColor ?? '#0c0c0c'
-                  : iconColor ?? '#bcbcbc',
+                  ? (activeIconColor ?? '#0c0c0c')
+                  : (iconColor ?? '#bcbcbc'),
               name: categoryToIcon(category),
-            })
+            }),
           );
         } else {
           return $(Icon, {
@@ -352,7 +352,7 @@ class CategoryShortcuts extends PureComponent<{
             color: 'transparent',
           });
         }
-      })
+      }),
     );
   }
 }
@@ -398,8 +398,9 @@ export default class EmojiModal extends PureComponent<
 
   private emojisByCategory: Record<string, Array<string>> = {};
   private filteredEmojis: Array<Emoji> = [];
-  private layouts: Array<{ length: number; offset: number; index: number }>;
-  private readonly ref: RefObject<FlatList<unknown>> = createRef();
+  private layouts: Array<{ length: number; offset: number; index: number }> =
+    [];
+  private readonly ref: RefObject<FlatList<unknown> | null> = createRef();
   private readonly viewabilityConfig = {
     minimumViewTime: 1,
     viewAreaCoveragePercentThreshold: 51,
@@ -427,11 +428,11 @@ export default class EmojiModal extends PureComponent<
 
     const groupedEmojis = groupBy(
       this.filteredEmojis,
-      (emoji: Emoji) => emoji.category
+      (emoji: Emoji) => emoji.category,
     );
 
     this.emojisByCategory = mapValues(groupedEmojis, (group: Array<Emoji>) =>
-      group.map(charFromEmojiObj)
+      group.map(charFromEmojiObj),
     );
   }
 
@@ -487,10 +488,10 @@ export default class EmojiModal extends PureComponent<
           shortName === query || officialName === query
             ? 3
             : shortName.startsWith(query) || officialName.startsWith(query)
-            ? 2
-            : shortName.includes(query) || officialName.includes(query)
-            ? 1
-            : 0;
+              ? 2
+              : shortName.includes(query) || officialName.includes(query)
+                ? 1
+                : 0;
         emoji._score = score;
         return emoji;
       })
@@ -522,7 +523,10 @@ export default class EmojiModal extends PureComponent<
     this.props.onPressOutside?.();
   };
 
-  getItemLayout = (data: Array<unknown> | null | undefined, index: number) => {
+  getItemLayout = (
+    data: ArrayLike<unknown> | null | undefined,
+    index: number,
+  ) => {
     if (data?.[0] === null)
       return { length: TOTAL_HEIGHT, offset: 0, index: 0 };
     return this.layouts[index];
@@ -570,12 +574,12 @@ export default class EmojiModal extends PureComponent<
             style: [styles.scroller, scrollStyle],
             initialNumToRender: 1,
             maxToRenderPerBatch: 1,
-            keyExtractor: (category) => category as string,
+            keyExtractor: (category: any) => category as string,
             getItemLayout: this.getItemLayout,
             onViewableItemsChanged: this.onViewableItemsChanged,
             viewabilityConfig: this.viewabilityConfig,
             renderItem: this.renderItem,
-          })
+          }),
         ),
         $(CategoryShortcuts, {
           show: searchResults.length === 0,
@@ -583,14 +587,14 @@ export default class EmojiModal extends PureComponent<
           iconColor: shortcutColor,
           activeIconColor: activeShortcutColor,
           onPressCategory: this.onPressCategory,
-        })
+        }),
       ),
 
       $(
         TouchableWithoutFeedback,
         { onPress: this.onPressBackground },
-        $(View, { style: [styles.background, backgroundStyle] })
-      )
+        $(View, { style: [styles.background, backgroundStyle] }),
+      ),
     );
   }
 }
